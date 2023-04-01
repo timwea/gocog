@@ -1,5 +1,5 @@
 # gocog
-gocog is a simple and lightweight Go library for validating Amazon Cognito RSA256-signed JSON Web Tokens (JWTs). It's useful for Lambda functions and has no third-party dependencies.
+gocog is a simple and lightweight Go library for validating Amazon Cognito JWTs. It supports both access and identity token validation, and has no third-party dependencies.
 
 ## Installation
 
