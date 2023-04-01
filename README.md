@@ -18,16 +18,12 @@ import (
 
 func main() {
 
-	validator := gocog.CognitoJwtValidator{
-        UserPoolId: "<userPoolId>", 
-        ClientId: "<clientId>"
-    }
+    validator := gocog.CognitoJwtValidator{UserPoolId: "<userPoolId>", ClientId: "<clientId>"}
 
-	err := validator.Validate("<token>")
-	
+    err := validator.Validate("<token>")	
     if err != nil {
-		fmt.Println(err)
-	}
+	fmt.Println(err)
+    }
 
 }
 ```
