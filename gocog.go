@@ -24,9 +24,10 @@ type DeconstructedToken struct {
 	B64Token     string
 }
 
+// CognitoJwtValidator is a struct that represents an Amazon Cognito JWT validator.
 type CognitoJwtValidator struct {
-	UserPoolId string
-	ClientId   string
+	UserPoolId string // UserPoolId is the ID of the Amazon Cognito user pool.
+	ClientId   string // ClientId is the ID of the Amazon Cognito app client.
 }
 
 type JsonWebKeyAPI interface {
@@ -222,6 +223,8 @@ func deconstructJwt(token string) (*DeconstructedToken, error) {
 	return &jwt, nil
 }
 
+// Validate takes a token string and validates it against the specified user pool and client ID
+// using Amazon Cognito's JWT validation rules.
 func (c CognitoJwtValidator) Validate(token string) error {
 	if err := validateJwtString(token); err != nil {
 		return err
