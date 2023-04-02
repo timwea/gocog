@@ -13,7 +13,7 @@ $ go get github.com/timwea/gocog
 package main
 
 import (
-    "fmt"
+    "log"
     "github.com/timwea/gocog"
 )
 
@@ -23,7 +23,7 @@ func main() {
 
     err := validator.Validate("<token>")	
     if err != nil {
-	fmt.Println(err)
+	log.Fatal(err)
     }
 
 }
