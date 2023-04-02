@@ -13,6 +13,7 @@ $ go get github.com/timwea/gocog
 package main
 
 import (
+    "fmt"
     "github.com/timwea/gocog"
 )
 
