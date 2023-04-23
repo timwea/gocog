@@ -1,5 +1,5 @@
 # gocog
-gocog is a simple and lightweight Go library for validating Amazon Cognito JWTs. It supports both access and identity token validation, and has no third-party dependencies.
+gocog is a simple Go library for validating Amazon Cognito JWTs. It supports both access and identity token validation and uses only the standard library.
 
 ## Installation
 
@@ -19,7 +19,7 @@ import (
 
 func main() {
 
-    validator := gocog.CognitoJwtValidator{UserPoolId: "<userPoolId>", ClientId: "<clientId>"}
+    validator := gocog.NewCognitoJwtValidator("<userPoolId>", "<clientId>")
 
     err := validator.Validate("<token>")	
     if err != nil {
