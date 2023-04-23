@@ -20,7 +20,7 @@ import (
 
 var privateKey *rsa.PrivateKey
 var jwksString string
-var validator CognitoJwtValidator
+var validator *CognitoJwtValidator
 var payload string
 var signedJWT string
 
@@ -52,7 +52,7 @@ func TestMain(m *testing.M) {
 
 	payload, _ = generateIDTokenPayload()
 	signedJWT, _ = generateSignedJWT(privateKey, payload)
-	validator = CognitoJwtValidator{UserPoolId: "us-east-1_fakeuserpool", ClientId: "v0axohew6Ejc32mvN1w4BGu4"}
+	validator = NewCognitoJwtValidator("us-east-1_fakeuserpool", "v0axohew6Ejc32mvN1w4BGu4")
 
 	exitCode := m.Run()
 	os.Exit(exitCode)
@@ -101,28 +101,28 @@ func TestCognitoJwtValidator_ExpiredToken(t *testing.T) {
 }
 
 func TestCognitoJwtValidator_InvalidUserPoolId(t *testing.T) {
-	validator = CognitoJwtValidator{UserPoolId: "xxxxx", ClientId: "v0axohew6Ejc32mvN1w4BGu4"}
+	validator = NewCognitoJwtValidator("xxxxx", "v0axohew6Ejc32mvN1w4BGu4")
 	err := validator.Validate(signedJWT)
 	expectedErrorMessage := "invalid Cognito User Pool ID: xxxxx"
 	testError(t, err, expectedErrorMessage)
 }
 
 func TestCognitoJwtValidator_InvalidIssuer(t *testing.T) {
-	validator = CognitoJwtValidator{UserPoolId: "us-south-5_fakeuserpool", ClientId: "v0axohew6Ejc32mvN1w4BGu4"}
+	validator = NewCognitoJwtValidator("us-south-5_fakeuserpool", "v0axohew6Ejc32mvN1w4BGu4")
 	err := validator.Validate(signedJWT)
 	expectedErrorMessage := "invalid issuer claim"
 	testError(t, err, expectedErrorMessage)
 }
 
 func TestCognitoJwtValidator_InvalidAudience(t *testing.T) {
-	validator = CognitoJwtValidator{UserPoolId: "us-east-1_fakeuserpool", ClientId: "xxxx"}
+	validator = NewCognitoJwtValidator("us-east-1_fakeuserpool", "xxxx")
 	err := validator.Validate(signedJWT)
 	expectedErrorMessage := "invalid audience claim"
 	testError(t, err, expectedErrorMessage)
 }
 
 func TestCognitoJwtValidator_ModifiedJWT(t *testing.T) {
-	validator = CognitoJwtValidator{UserPoolId: "us-east-1_fakeuserpool", ClientId: "v0axohew6Ejc32mvN1w4BGu4"}
+	validator = NewCognitoJwtValidator("us-east-1_fakeuserpool", "v0axohew6Ejc32mvN1w4BGu4")
 	modifiedJWT := modifyJWTString(signedJWT)
 	err := validator.Validate(modifiedJWT)
 	expectedErrorMessage := "invalid signature"

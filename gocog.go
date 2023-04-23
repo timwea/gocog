@@ -266,3 +266,8 @@ func (c CognitoJwtValidator) Validate(token string) error {
 
 	return fmt.Errorf("error validating jwt: %s", strings.TrimSpace(errMsg))
 }
+
+// NewCognitoJwtValidator returns a new Cognito JWT validator client
+func NewCognitoJwtValidator(userPoolId string, clientId string) *CognitoJwtValidator {
+	return &CognitoJwtValidator{userPoolId, clientId}
+}
