@@ -227,44 +227,47 @@ func deconstructJwt(token string) (*DeconstructedToken, error) {
 // using Amazon Cognito's JWT validation rules.
 func (c CognitoJwtValidator) Validate(token string) error {
 	if err := validateJwtString(token); err != nil {
-		return err
+		return formatValidationError(err)
 	}
 
 	jwksUri, err := parseJwkUri(c.UserPoolId)
 	if err != nil {
-		return err
+		return formatValidationError(err)
 	}
 
 	jwt, err := deconstructJwt(token)
 	if err != nil {
-		return fmt.Errorf("error parsing jwt: %w", err)
+		return formatValidationError(err)
 	}
 
 	jwksClient := &JwksClient{httpClient: http.DefaultClient}
 	publicKey, err := getRSAPublicKey(jwksUri, jwt.Header["kid"].(string), jwksClient)
 	if err != nil {
-		return err
+		return formatValidationError(err)
 	}
 
-	var errMsg string
-	switch {
-	case jwt.validateExp() != nil:
-		errMsg += "token is expired."
-		break
-	case jwt.validateAudience(c.ClientId) != nil:
-		errMsg += "invalid audience claim."
-		break
-	case jwt.validateIssuer(c.UserPoolId) != nil:
-		errMsg += "invalid issuer claim."
-		break
-	case jwt.validateSignature(publicKey) != nil:
-		errMsg += "invalid signature."
-		break
-	default:
-		return nil
+	if err := jwt.validateExp(); err != nil {
+		return formatValidationError(err)
 	}
 
-	return fmt.Errorf("error validating jwt: %s", strings.TrimSpace(errMsg))
+	if err := jwt.validateAudience(c.ClientId); err != nil {
+		return formatValidationError(err)
+	}
+
+	if err := jwt.validateIssuer(c.UserPoolId); err != nil {
+		return formatValidationError(err)
+	}
+
+	if err := jwt.validateSignature(publicKey); err != nil {
+		return formatValidationError(err)
+	}
+
+	return nil
+
+}
+
+func formatValidationError(err error) error {
+	return fmt.Errorf("error validating jwt: %s", err)
 }
 
 // NewCognitoJwtValidator returns a new Cognito JWT validator client

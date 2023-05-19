@@ -82,7 +82,7 @@ func TestCognitoJwtValidator_InvalidJwtString(t *testing.T) {
 
 func TestCognitoJwtValidator_InvalidJwtObject(t *testing.T) {
 	err := validator.Validate("xxxx.xxxx.xxxx")
-	expectedErrorMessage := "error parsing jwt:"
+	expectedErrorMessage := "error validating jwt: invalid character 'Ç' looking for beginning of value"
 	testError(t, err, expectedErrorMessage)
 }
 
@@ -96,7 +96,7 @@ func TestCognitoJwtValidator_ExpiredToken(t *testing.T) {
 	expiredTokenPayload, _ := generateExpiredToken()
 	expiredSignedJWT, _ := generateSignedJWT(privateKey, expiredTokenPayload)
 	err := validator.Validate(expiredSignedJWT)
-	expectedErrorMessage := "error validating jwt: token is expired."
+	expectedErrorMessage := "error validating jwt: token is expired"
 	testError(t, err, expectedErrorMessage)
 }
 
